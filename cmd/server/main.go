@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"net/http"
 	"strings"
 	"time"
@@ -29,7 +30,10 @@ func main() {
 
 	// Initialize components
 	requestStore := store.New()
-	opClient := opconnect.New(cfg.OPConnectHost, cfg.OPConnectToken)
+	opClient, err := opconnect.New(context.Background(), cfg.OPServiceAccountToken)
+	if err != nil {
+		log.Fatal("Failed to initialize 1Password SDK", logger.F("error", err.Error()))
+	}
 	tgClient := telegram.New(cfg.TelegramBotToken, cfg.TelegramChatID)
 
 	// Create HTTP handler
