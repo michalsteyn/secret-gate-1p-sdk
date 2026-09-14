@@ -12,9 +12,8 @@ type Config struct {
 	// Server settings
 	Port string
 
-	// 1Password Connect settings
-	OPConnectHost  string
-	OPConnectToken string
+	// 1Password SDK settings
+	OPServiceAccountToken string
 
 	// Telegram settings
 	TelegramBotToken string
@@ -31,13 +30,12 @@ type Config struct {
 // Load reads configuration from environment variables
 func Load() (*Config, error) {
 	cfg := &Config{
-		Port:             getEnvDefault("PORT", "8080"),
-		OPConnectHost:    os.Getenv("OP_CONNECT_HOST"),
-		OPConnectToken:   readSecretOrEnv("op_connect_token", "OP_CONNECT_TOKEN"),
-		TelegramBotToken: readSecretOrEnv("telegram_bot_token", "TELEGRAM_BOT_TOKEN"),
-		WebhookBaseURL:   os.Getenv("WEBHOOK_BASE_URL"),
-		RequestTTL:       getDurationDefault("REQUEST_TTL", 15*time.Minute),
-		CleanupInterval:  getDurationDefault("CLEANUP_INTERVAL", 5*time.Minute),
+		Port:                  getEnvDefault("PORT", "8080"),
+		OPServiceAccountToken: readSecretOrEnv("op_service_account_token", "OP_SERVICE_ACCOUNT_TOKEN"),
+		TelegramBotToken:      readSecretOrEnv("telegram_bot_token", "TELEGRAM_BOT_TOKEN"),
+		WebhookBaseURL:        os.Getenv("WEBHOOK_BASE_URL"),
+		RequestTTL:            getDurationDefault("REQUEST_TTL", 15*time.Minute),
+		CleanupInterval:       getDurationDefault("CLEANUP_INTERVAL", 5*time.Minute),
 	}
 
 	// Parse Telegram chat ID
@@ -55,11 +53,8 @@ func Load() (*Config, error) {
 
 // Validate checks that required configuration is present
 func (c *Config) Validate() error {
-	if c.OPConnectHost == "" {
-		return errors.New("OP_CONNECT_HOST is required")
-	}
-	if c.OPConnectToken == "" {
-		return errors.New("OP_CONNECT_TOKEN is required")
+	if c.OPServiceAccountToken == "" {
+		return errors.New("OP_SERVICE_ACCOUNT_TOKEN is required")
 	}
 	if c.TelegramBotToken == "" {
 		return errors.New("TELEGRAM_BOT_TOKEN is required")
