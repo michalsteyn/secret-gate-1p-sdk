@@ -4,7 +4,10 @@ go 1.23.0
 
 toolchain go1.23.8
 
-require github.com/modelcontextprotocol/go-sdk v1.3.1
+require (
+	github.com/1password/onepassword-sdk-go v0.3.1
+	github.com/modelcontextprotocol/go-sdk v1.3.1
+)
 
 require (
 	github.com/google/jsonschema-go v0.4.2 // indirect
